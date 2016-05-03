@@ -1,0 +1,23 @@
+{
+	"name": "voyent.notify.js",
+	"version": "0.0.1",
+	"main": "lib/voyent.notify.js",
+	"ignore": [
+		"bower.json",
+		"LICENCE",
+		"README.md",
+		".gitignore"
+	],
+	"dependencies":{
+      "bridgeit.js": "1.0.7",
+      "bridgeit.io.js": "#dev",
+      "bridgeit.xio.js": "https://github.com/bridgeit/bridgeit.xio.js.git#gh-pages"
+	},
+	"devDependencies":{},
+	"keywords":[
+		"mobile",
+		"javascript",
+		"services"
+	]
+
+}
