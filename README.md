@@ -1,6 +1,28 @@
 # voyent.notify.js
 
-Voyent.notify.js is a client library for displaying, managing and injecting notification data sent by Voyent services.
+Voyent.notify.js is a client library for displaying and interacting with notifications received from the Voyent Push
+Service. The library provides tools for displaying notifications, managing the notification queue and injecting
+notification data into web pages. Some notable features of the library include:
+
+* **Browser Native Notifications**: When the library is included in your application you will automatically be prompted 
+to allow browser native notifications. Browser native notifications are based on the Web Notifications API. If permission
+is allowed then the library will use them as the default unless they are blocked or disabled in the future.
+
+* **Toast Notifications**: If browser native notifications are not allowed or are disabled then the built-in toast notifications 
+will be used. Toast notifications support options such as stacking, positioning, hide timeouts, styling customization, 
+and more...
+
+* **Notification Redirection**: By default, clicking on notifications in the application automatically navigates the user to
+the URL specified in the Notification. After navigation the notification payload will automatically be injected into the page.
+
+* **Notification Injection**: A simple syntax is used that makes it easy to inject data from notifications into your
+application. For more information on this see [Notification Injection](#notificationInjection).
+
+* **Queue Management**: Notifications are automatically added to the queue when they are received. Each one can be loaded
+from the queue and removed when they are no longer needed.
+
+* **Persistent Queue**: The notification queue is stored in the session and will survive app refreshes or redirects.
+
 
 ## Compatible Platforms
 Tested on Chrome, Firefox and Safari.
@@ -13,7 +35,7 @@ Tested on Chrome, Firefox and Safari.
 
 ## Getting Started
 
-1. Get the basic dependencies manually or with Bower: 
+1) Get the basic dependencies manually or with Bower: 
 
 ```
 "dependencies": {
@@ -21,7 +43,7 @@ Tested on Chrome, Firefox and Safari.
 }
 ```
 
-2. Import the dependencies:
+2) Import the dependencies:
 
 ```
 <script src="../bower_components/voyent.notify.js/bower_components/bridgeit.js/lib/bridgeit.js"></script>
@@ -29,23 +51,88 @@ Tested on Chrome, Firefox and Safari.
 <script src="../bower_components/voyent.notify.js/bower_components/bridgeit.xio.js/lib/bridgeit.xio.js"></script>
 ```
 
-3. Import the library and dependencies: 
+3) Import the library and dependencies: 
 
 ```
 <script src="../bower_components/voyent.notify.js/lib/voyent.notify.js"></script>
 ```
 
-4. Establish a connection to the push service: 
+4) Establish a connection to the push service: 
 
 ```
 bridgeit.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
 ```
 
-5. Join desired push groups:
+5) Join desired push groups:
 
 ```
 bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() + "/" + bridgeit.io.auth.getLastKnownUsername());
 ```
+
+<a name="notificationInjection"></a>
+## Notification Injection
+
+Voyent.notify.js provides a function ([injectNotificationData](#injectNotificationData)) for automatically injecting
+data from a notification into an application.  In order for this to work the app markup must use HTML data properties
+on elements that they want to inject the data on. The data property names define which data should be injected.
+
+The data properties should be named as data-payload-* or data-metadata-* where the * represents the name of the property
+in the payload or metadata that should be injected.
+ 
+Notification injection occurs in the following cases:  
+
+1) When a browser notification is received and the app is currently on the page indicated in the URL of the notification and no notification is selected.  
+
+2) After returning to the application to act on a notification received on a non-browser transport (cloud notification, email, sms).  
+
+3) After a notification is clicked and the app redirects to the relevant notification page.  
+
+4) [redirectToNotification](#redirectToNotification) is called manually.
+
+**Example** 
+```html
+<!-- HTML Snippet (Before Injection) -->
+<span data-metadata-desc></span>
+<input data-payload-editableText />
+<select data-payload-simpleList></span>
+<select data-payload-complexList></span>
+```
+```js
+//Sample Notification
+{
+   "metadata":{
+      "desc":"Testing 1, 2, 3",
+      "time":"2016-05-31T17:07:24.390Z",
+      "group":"/demos/realms/notify/jennifer.rene",
+      "username":"admin.user"
+   },
+   "payload":{
+      "editableText":"Some editable text",
+      "simpleList":["1","2","3"],
+      "complexList":[
+         { "label":"List Item One", "value":"1" },
+         { "label":"List Item Two", "value":"2" },
+         { "label":"List Item Three", "value":"3" },
+      ]
+   }
+}
+```
+```html
+<!-- HTML Snippet (After Injection) -->
+<span data-metadata-desc>Testing 1, 2, 3</span>
+<input data-payload-editableText value="Some editable text"/>
+<select data-payload-simpleList>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+</select>
+<select data-payload-complexList>
+    <option value="1">List Item One</option>
+    <option value="2">List Item Two</option>
+    <option value="3">List Item Three</option>
+</select>
+```
+
 
 ## API Reference
 
@@ -54,6 +141,7 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
         * [payload](#payload)
         * [metadata](#metadata)
         * [queue](#queue)
+        * [queuePosition](#queuePosition)
     * [General Notification Config](#generalConfig)
         * [title](#title)
         * [icon](#icon)
@@ -68,7 +156,7 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
         * [style](#style)
         * [close.enabled](#closeEnabled)
         * [close.style](#closeStyle)
-    * [Native Notification Config](#nativeConfig)
+    * [Browser Native Notification Config](#nativeConfig)
         * [enabled](#nativeEnabled)
         * [hideAfterMs](#nativeHideAfterMs)
 
@@ -79,11 +167,12 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
         * [hideNotification](#hideNotification)
-        * [getCurrentNotification](#getCurrentNotification)
-        * [removeCurrentNotification](#removeCurrentNotification)
+        * [getSelectedNotification](#getSelectedNotification)
+        * [removeSelectedNotification](#removeSelectedNotification)
         * [injectNotificationData](#injectNotificationData)
         * [clearInjectedNotificationData](#clearInjectedNotificationData)
-        * [setCurrentNotification](#setCurrentNotification)
+        * [selectNotification](#selectNotification)
+        * [selectNotificationAt](#selectNotificationAt)
     * [Queue Management](#queueManagement)
         * [getNotificationCount](#getNotificationCount)
         * [getNotificationAt](#getNotificationAt)
@@ -101,7 +190,7 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
     * [afterQueueUpdated](#afterQueueUpdated)
     * [beforeDisplayNotification](#beforeDisplayNotification)
     * [afterDisplayNotification](#afterDisplayNotification)
-    * [currentNotificationSet](#currentNotificationSet)
+    * [notificationSelected](#notificationSelected)
     * [notificationClicked](#notificationClicked)
     * [notificationClosed](#notificationClosed)
 
@@ -113,27 +202,28 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
 <a name="readonly"></a>
 #### Readonly
 
-| Property                         | Description                            | Type     | Default |
-| -------------------------------- | -------------------------------------- | -------- | ------- |
-| <a name="payload"></a> payload   | The current notification payload.      | Object   | null    |
-| <a name="metadata"></a> metadata | The current notification metadata.     | Object   | null    |
-| <a name="queue"></a> queue       | The notification queue.                | Object[] | []      |
+| Property                                         | Description                                                                  | Type     | Default |
+| ------------------------------------------------ | ---------------------------------------------------------------------------- | -------- | ------- |
+| <a name="payload"></a> payload                   | The selected notification payload.                                           | Object   | null    |
+| <a name="metadata"></a> metadata                 | The selected notification metadata.                                          | Object   | null    |
+| <a name="queue"></a> queue                       | The notification queue. New notifications are added to the end of the queue. | Object[] | []      |
+| <a name="queuePosition"></a> queuePosition       | The zero-based index of the selected notification in the queue.              | Integer  | -1      |
 
 **Example**  
 ```js
-var currentPayload = voyent.notify.payload;
-var currentMeta = voyent.notify.metadata;
+var selectedPayload = voyent.notify.payload;
+var selectedMetadata = voyent.notify.metadata;
 var queue = voyent.notify.queue;
 ```
 
 <a name="generalConfig"></a>
 #### General Notification Config (config.)
 
-| Property                                     | Description                                                                                   | Type     | Default |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------- | -------- | ------- |
-| <a name="title"></a> title                   | Title/header text for each notification.                                                      | String   | ''      |
-| <a name="icon"></a> icon                     | The URL of the image to use as an icon for Toast and Native notifications. Max-width of 40px. | String   | ''      |
-| <a name="hideAfterClick"></a> hideAfterClick | Indicates if the notification should be hidden after clicking on it.                          | Boolean  | true    |
+| Property                                     | Description                                                                                                                                                                                     | Type    | Default |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------- |
+| <a name="title"></a> title                   | Title/header text for each notification.                                                                                                                                                        | String  | ''      |
+| <a name="icon"></a> icon                     | The URL of the image to use as an icon for toast and browser native notifications. The recommended image size is 40px x 40px. The image will be scaled down to a width of 40px if it is larger. | String  | ''      |
+| <a name="hideAfterClick"></a> hideAfterClick | Indicates if the notification should be hidden after clicking on it.                                                                                                                            | Boolean | true    |
 
 **Example**  
 ```js
@@ -145,17 +235,17 @@ voyent.notify.config.hideAfterClick = 'false';
 <a name="toastConfig"></a>
 #### Toast Notification Config (config.toast.)
 
-| Property                                        | Description                                                                                                                       | Type    | Default     |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------- |
-| <a name="toastEnabled"></a> enabled             | Indicates if toast notifications should be shown.                                                                                 | Boolean | true        |
-| <a name="toastHideAfterMs"></a> hideAfterMs     | Time in milliseconds that the notification will be automatically hidden after shown (specify <=0 to never hide the notification). | Integer | 5000        |
-| <a name="stackLimit"></a> stackLimit            | Indicates the number of notifications that will be allowed to stack (specify <=0 to have no limit).                               | Integer | 3           |
-| <a name="overwriteOld"></a> overwriteOld        | Indicates if new toast notifications should overwrite/replace old ones in the stack.                                              | Boolean | false       |
-| <a name="position"></a> position                | Position of toast notifications on page. One of 'top-right','top-left','bottom-right','bottom-left'.                              | String  | 'top-right' |
-| <a name="spacing"></a> spacing                  | Number of pixels that the toast notifications should be spaced apart.                                                             | Integer | 2           |
-| <a name="style"></a> style                      | Custom styling for the toast notification container.                                                                              | String  | ''          |
-| <a name="closeEnabled"></a> close.enabled       | Indicates if the close button should be shown for toast notifications.                                                            | Boolean | true        |
-| <a name="closeStyle"></a> close.style           | Custom styling for the toast notification close container.                                                                        | String  | ''          |
+| Property                                        | Description                                                                                                                                                                   | Type    | Default     |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------- |
+| <a name="toastEnabled"></a> enabled             | Indicates if toast notifications should be shown.                                                                                                                             | Boolean | true        |
+| <a name="toastHideAfterMs"></a> hideAfterMs     | Time in milliseconds that the notification will be automatically hidden after shown (specify <=0 to never hide the notification, making the toast closable only by clicking). | Integer | 5000        |
+| <a name="stackLimit"></a> stackLimit            | Indicates the number of notifications that will be allowed to stack (specify <=0 to have no limit).                                                                           | Integer | 3           |
+| <a name="overwriteOld"></a> overwriteOld        | Indicates if new toast notifications should overwrite/replace old ones in the stack.                                                                                          | Boolean | false       |
+| <a name="position"></a> position                | Position of toast notifications on page. One of 'top-right','top-left','bottom-right','bottom-left'.                                                                          | String  | 'top-right' |
+| <a name="spacing"></a> spacing                  | Number of pixels that the toast notifications should be spaced apart.                                                                                                         | Integer | 2           |
+| <a name="style"></a> style                      | Custom styling that is applied to the top-level toast notification container. Any styling defined here will override the defaults.                                            | String  | ''          |
+| <a name="closeEnabled"></a> close.enabled       | Indicates if the close button should be shown for toast notifications.                                                                                                        | Boolean | true        |
+| <a name="closeStyle"></a> close.style           | Custom styling that is applied to the toast notification close container. Any styling defined here will override the defaults.                                                | String  | ''          |
 
 **Example**  
 ```js
@@ -166,11 +256,11 @@ voyent.notify.config.toast.close.style = 'color:red;';
 ```
 
 <a name="nativeConfig"></a>
-#### Native Notification Config (config.native.)
+#### Browser Native Notification Config (config.native.)
 
 | Property                                     | Description                                                                                                                       | Type    | Default |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- | ------- |
-| <a name="nativeEnabled"></a> enabled         | Indicates if native notifications should be enabled (still must be allowed by user in browser).                                   | Boolean | true    |
+| <a name="nativeEnabled"></a> enabled         | Indicates if browser native notifications should be enabled (still must be allowed by user in browser).                           | Boolean | true    |
 | <a name="nativeHideAfterMs"></a> hideAfterMs | Time in milliseconds that the notification will be automatically hidden after shown (specify <=0 to never hide the notification). | Integer | -1      |
  
 **Example**  
@@ -188,7 +278,8 @@ voyent.notify.config.native.hideAfterMs = 5000;
 
 <a name="startListening"></a>
 ##### startListening()
-Start listening for notifications.
+Start listening for notifications. This function is called automatically when the library is loaded and a user is logged
+in via bridgeit.io. This function only needs to be called manually after [stopListening](#stopListening) has been called.
 
 **Example**  
 ```js
@@ -197,7 +288,8 @@ voyent.notify.startListening();
 
 <a name="stopListening"></a>
 ##### stopListening()
-Stop listening for notifications.
+Stop listening for notifications. No new notifications will be received by the library after calling this function but
+the other features of the library will still be available.
 
 **Example**  
 ```js
@@ -209,7 +301,8 @@ voyent.notify.stopListening();
 
 <a name="redirectToNotification"></a>
 ##### redirectToNotification(notification)
-Redirects the browser to the URL specified in the metadata of the passed notification and injects the notification data into the page.
+Redirects the browser to the URL specified in the metadata of the passed notification and injects the notification data
+into the page.
 
 | Param        | Description                                         | Type   |
 | ------------ | --------------------------------------------------- | ------ |
@@ -227,7 +320,7 @@ Manually hides a notification.
 
 | Param        | Description                                                        | Type    |
 | ------------ | ------------------------------------------------------------------ | ------- |
-| notification | A Toast or Native notification reference.                          | Object  |
+| notification | A toast or browser native notification reference.                  | Object  |
 | ms           | The number of milliseconds to wait before hiding the notification. | Integer |
 
 **Example**  
@@ -242,33 +335,32 @@ document.addEventListener('afterDisplayNotification',function(e) {
 });
 ```
 
-<a name="getCurrentNotification"></a>
-##### getCurrentNotification()
-Returns the currently active notification or null if there is no current notification.  
+<a name="getSelectedNotification"></a>
+##### getSelectedNotification()
+Returns the selected notification or null if no notification is selected.  
 **Returns:** Object - The notification.
 
 **Example**  
 ```js
-var currentNotification = voyent.notify.getCurrentNotification();
+var selectedNotification = voyent.notify.getSelectedNotification();
 ```
 
-<a name="removeCurrentNotification"></a>
-##### removeCurrentNotification()
-Removes the currently active notification.  
+<a name="removeSelectedNotification"></a>
+##### removeSelectedNotification()
+Removes the selected notification. If successful the queuePosition will be reset to -1 indicating that no notification is currently selected.  
 **Returns:** Boolean - Indicates if the notification was removed successfully.
 
 **Example**  
 ```js
-if (voyent.notify.removeCurrentNotification()) {
+if (voyent.notify.removeSelectedNotification()) {
     console.log('Notification removed successfully!');
 }
 ```
 
 <a name="injectNotificationData"></a>
 ##### injectNotificationData()
-Injects the current notification into elements with data-payload-* and data-metadata-* attributes. 
-Currently has special support for input and select elements. 
-For all other elements the data will be inserted as text content.
+Injects the selected notification into elements with data-payload-* and data-metadata-* attributes. Currently has 
+special support for input and select elements. For all other elements the data will be inserted as text content.
 
 **Example**  
 ```js
@@ -284,9 +376,9 @@ Removes all injected notification data from the page.
 voyent.notify.clearInjectedNotificationData();
 ```
 
-<a name="setCurrentNotification"></a>
-##### setCurrentNotification(notification)
-Sets the current notification to the one passed if it is a valid notification in the queue.
+<a name="selectNotification"></a>
+##### selectNotification(notification)
+Sets the selected notification to the one passed if it is a valid notification in the queue.  
 **Returns:** Boolean - Indicates if the notification was set successfully.
 
 | Param        | Description                        | Type   |
@@ -295,7 +387,21 @@ Sets the current notification to the one passed if it is a valid notification in
 
 **Example**  
 ```js
-voyent.notify.setCurrentNotification(voyent.notify.getNextNotification());
+voyent.notify.selectNotification(voyent.notify.getNextNotification());
+```
+
+<a name="selectNotificationAt"></a>
+##### selectNotificationAt(index)
+Sets the selected notification to the one in the queue at the specified index.  
+**Returns:** Boolean - Indicates if the notification was set successfully.
+
+| Param | Description                                            | Type    |
+| ----- | ------------------------------------------------------ | ------- |
+| index | The zero-based index of the notification in the queue. | Integer |
+
+**Example**  
+```js
+voyent.notify.selectNotificationAt(3);
 ```
 
 <a name="queueManagement"></a>
@@ -303,7 +409,7 @@ voyent.notify.setCurrentNotification(voyent.notify.getNextNotification());
 
 <a name="getNotificationCount"></a>
 ##### getNotificationCount()
-Returns an integer that represents the number of notifications currently in the queue.
+Returns an integer that represents the number of notifications currently in the queue.  
 **Returns:** Integer - The notification count.
 
 **Example**  
@@ -313,12 +419,12 @@ console.log('Currently there are',voyent.notify.getNotificationCount(),'notifica
 
 <a name="getNotificationAt"></a>
 ##### getNotificationAt(index)
-Returns the notification at the specified index or null if none was found.
+Returns the notification at the specified index or null if none was found.  
 **Returns:** Object - The notification.
 
-| Param        | Description                                 | Type    |
-| ------------ | ------------------------------------------- | ------- |
-| index        | The index of the notification in the queue. | Integer |
+| Param | Description                                            | Type    |
+| ----- | ------------------------------------------------------ | ------- |
+| index | The zero-based index of the notification in the queue. | Integer |
 
 **Example**  
 ```js
@@ -327,7 +433,7 @@ var fourthNotification = voyent.notify.getNotificationAt(3);
 
 <a name="getNextNotification"></a>
 ##### getNextNotification()
-Returns the next notification in the queue or null if none was found.
+Returns the next (newer) notification in the queue or null if there is no next.  
 **Returns:** Object - The notification.
 
 **Example**  
@@ -337,7 +443,7 @@ var nextNotification = voyent.notify.getNextNotification();
 
 <a name="getPreviousNotification"></a>
 ##### getPreviousNotification()
-Returns the previous notification in the queue or a null if none was found.
+Returns the previous (older) notification in the queue or null if there is no previous.  
 **Returns:** Object - The notification.
 
 **Example**  
@@ -347,7 +453,7 @@ var previousNotification = voyent.notify.getPreviousNotification();
 
 <a name="getNewestNotification"></a>
 ##### getNewestNotification()
-Returns the newest notification that is currently in the queue or null if the queue is empty.
+Returns the newest notification by date that is currently in the queue or null if the queue is empty.  
 **Returns:** Object - The notification.
 
 **Example**  
@@ -357,7 +463,7 @@ var newestNotification = voyent.notify.getNewestNotification();
 
 <a name="getOldestNotification"></a>
 ##### getOldestNotification()
-Returns the oldest notification that is currently in the queue or null if the queue is empty.
+Returns the oldest notification by date that is currently in the queue or null if the queue is empty.  
 **Returns:** Object - The notification.
 
 **Example**  
@@ -367,7 +473,7 @@ var oldestNotification = voyent.notify.getOldestNotification();
 
 <a name="removeNotification"></a>
 ##### removeNotification(notification)
-Removes the specified notification from the queue.
+Removes the specified notification from the queue.  
 **Returns:** Boolean - Indicates if the notification was removed successfully.
 
 | Param        | Description                     | Type   |
@@ -381,12 +487,12 @@ voyent.notify.removeNotification(voyent.notify.getOldestNotification());
 
 <a name="removeNotificationAt"></a>
 ##### removeNotificationAt(index)
-Removes the notification from the queue at the specified index.
+Removes the notification from the queue at the specified index.  
 **Returns:** Boolean - Indicates if the notification was removed successfully.
 
-| Param        | Description                          | Type    |
-| ------------ | ------------------------------------ | ------- |
-| index | The index of the notification in the queue. | Integer |
+| Param | Description                                            | Type    |
+| ----- | ------------------------------------------------------ | ------- |
+| index | The zero-based index of the notification in the queue. | Integer |
 
 **Example**  
 ```js
@@ -395,7 +501,8 @@ voyent.notify.removeNotificationAt(1);
 
 <a name="clearNotificationQueue"></a>
 ##### clearNotificationQueue()
-Removes all notifications from the notification queue.
+Removes all notifications from the notification queue (including clearing the selected notification) and resets the 
+queuePosition to -1.  
 
 **Example**  
 ```js
@@ -428,11 +535,12 @@ document.addEventListener('voyentNotifyInitialized',function(e) {
 Fired before the queue is updated. An update will be triggered when loading a queue from storage or adding, removing or clearing the queue. Cancel the event to prevent the operation.  
 **Cancelable:** true
 
-| Param        | Description                                                                                                                     | Type     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| op           | The operation being performed on the queue. One of 'add','del','clear',load'. Load indicates the queue was loaded from storage. | String   |
-| notification | The notification being added or removed (only provided if op = 'add' or 'del').                                                 | Object   |
-| queue        | The queue before the operation is performed.                                                                                    | Object[] |
+| Param        | Description                                                                                                                          | Type     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| op           | The operation being performed on the queue. One of 'add','del','clear',load'. Load indicates the queue is being loaded from storage. | String   |
+| notification | The notification being added or removed (only provided if op = 'add' or 'del').                                                      | Object   |
+| queueToLoad  | The queue that is being loaded from storage (only provided if op = 'load').                                                          | Object[] |
+| queue        | The queue before the operation is performed.                                                                                         | Object[] |
 
 **Example**  
 ```js
@@ -451,9 +559,11 @@ document.addEventListener('beforeQueueUpdated',function(e) {
 Fired after the queue is updated.  
 **Cancelable:** false
 
-| Param  | Description                                      | Type     |
-| ------ | ------------------------------------------------ | -------- |
-| queue | The queue after an update operation.              | Object[] |
+| Param        | Description                                                                                                                             | Type     |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| op           | The operation that was just performed on the queue. One of 'add','del','clear',load'. Load indicates the queue was loaded from storage. | String   |
+| notification | The notification that was added or removed (only provided if op = 'add' or 'del').                                                      | Object   |
+| queue        | The queue after the operation was performed.                                                                                            | Object[] |
 
 **Example**  
 ```js
@@ -466,12 +576,12 @@ document.addEventListener('afterQueueUpdated',function(e) {
 
 <a name="beforeDisplayNotification"></a>
 ##### beforeDisplayNotification
-Fired before a notification is displayed. Fires for both Toast and Native notifications. Cancel the event to prevent the notification from being displayed.    
+Fired before a notification is displayed. Fires for both toast and browser native notifications. Cancel the event to prevent the notification from being displayed.    
 **Cancelable:** true
 
-| Param        | Description                                    | Type    |
-| ------------ | ---------------------------------------------- | ------- |
-| notification | The notification that will be displayed.       | Object  |
+| Param        | Description                              | Type    |
+| ------------ | ---------------------------------------- | ------- |
+| notification | The notification that will be displayed. | Object  |
 
 **Example**  
 ```js
@@ -485,14 +595,14 @@ document.addEventListener('beforeDisplayNotification',function(e) {
 
 <a name="afterDisplayNotification"></a>
 ##### afterDisplayNotification
-Fired after a notification is displayed. Fires for both Toast and Native notifications.    
+Fired after a notification is displayed. Fires for both toast and browser native notifications.    
 **Cancelable:** false
 
-| Param        | Description                                                                        | Type   |
-| ------------ | ---------------------------------------------------------------------------------- | ------ |
-| notification | The notification that was just displayed.                                          | Object |
-| toast        | The toast DOM element. Provided if the notification displayed was toast.           | Object |
-| native       | The native Notification object. Provided if the notification displayed was native. | Object |
+| Param        | Description                                                                                            | Type   |
+| ------------ | ------------------------------------------------------------------------------------------------------ | ------ |
+| notification | The notification that was just displayed.                                                              | Object |
+| toast        | The toast DOM element. Provided if the notification displayed was toast.                               | Object |
+| native       | The Notification (Web Notification) object. Provided if the notification displayed was browser native. | Object |
 
 **Example**  
 ```js
@@ -506,9 +616,9 @@ document.addEventListener('afterDisplayNotification',function(e) {
 });
 ```
 
-<a name="currentNotificationSet"></a>
-##### currentNotificationSet
-Fired after the current notification is set.
+<a name="notificationSelected"></a>
+##### notificationSelected
+Fired after a notification is selected.
 **Cancelable:** false
 
 | Param        | Description                         | Type   |
@@ -517,22 +627,22 @@ Fired after the current notification is set.
 
 **Example**  
 ```js
-//custom app handling each time the current notification is set
-document.addEventListener('currentNotificationSet',function(e) {
-    myApp.processNotification();
+//custom app handling each time a notification is selected
+document.addEventListener('notificationSelected',function(e) {
+    myApp.doSpecialHandling();
 });
 ```
 
 <a name="notificationClicked"></a>
 ##### notificationClicked
-Fired when a notification is clicked. Fires for both Toast and Native notifications. Cancel the event to prevent the app from redirecting and the notification from closing (if hideAfterClick is true).    
+Fired when a notification is clicked. Fires for both toast and browser native notifications. Cancel the event to prevent the app from redirecting and the notification from closing (if hideAfterClick is true).    
 **Cancelable:** true
 
-| Param        | Description                                                                      | Type   |
-| ------------ | -------------------------------------------------------------------------------- | ------ |
-| notification | The notification that was just clicked.                                          | Object |
-| toast        | The toast DOM element. Provided if the notification clicked was toast.           | Object |
-| native       | The native Notification object. Provided if the notification clicked was native. | Object |
+| Param        | Description                                                                                            | Type   |
+| ------------ | ------------------------------------------------------------------------------------------------------ | ------ |
+| notification | The notification that was just clicked.                                                                | Object |
+| toast        | The toast DOM element. Provided if the notification clicked was toast.                                 | Object |
+| native       | The Notification (Web Notification) object. Provided if the notification displayed was browser native. | Object |
 
 **Example**  
 ```js
@@ -547,14 +657,14 @@ document.addEventListener('notificationClicked',function(e) {
 
 <a name="notificationClosed"></a>
 ##### notificationClosed
-Fired when a notification is closed. Fires for both Toast and Native notifications. Cancel the event to prevent the notification from closing automatically (toast notifications only).  
+Fired when a notification is closed. Fires for both toast and browser native notifications. Cancel the event to prevent the notification from closing automatically (toast notifications only).  
 **Cancelable:** true
 
-| Param        | Description                                                                          | Type   |
-| ------------ | ------------------------------------------------------------------------------------ | ------ |
-| notification | The notification being closed.                                                       | Object |
-| toast        | The toast DOM element. Provided if the notification being closed is toast.           | Object |
-| native       | The native Notification object. Provided if the notification being closed is native. | Object |
+| Param        | Description                                                                                            | Type   |
+| ------------ | ------------------------------------------------------------------------------------------------------ | ------ |
+| notification | The notification being closed.                                                                         | Object |
+| toast        | The toast DOM element. Provided if the notification being closed is toast.                             | Object |
+| native       | The Notification (Web Notification) object. Provided if the notification displayed was browser native. | Object |
 
 **Example**  
 ```js
