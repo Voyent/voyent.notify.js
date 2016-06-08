@@ -13,9 +13,9 @@ will be used. Toast notifications support options such as stacking, positioning,
 and more...
 
 * **Notification Redirection**: By default, clicking on notifications in the application automatically navigates the user to
-the URL specified in the Notification. After navigation the notification payload will automatically be injected into the page.
+the URL specified in the Notification. After navigation the notification data will automatically be injected into the page.
 
-* **Notification Injection**: A simple syntax is used that makes it easy to inject data from notifications into your
+* **Notification Injection**: A simple syntax is used that makes it easy to inject data from notifications into the view of your
 application. For more information on this see [Notification Injection](#notificationInjection).
 
 * **Queue Management**: Notifications are automatically added to the queue when they are received. Each one can be loaded
@@ -73,11 +73,12 @@ bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() +
 ## Notification Injection
 
 Voyent.notify.js provides a function ([injectNotificationData](#injectNotificationData)) for automatically injecting
-data from a notification into an application.  In order for this to work the app markup must use HTML data properties
-on elements that they want to inject the data on. The data property names define which data should be injected.
+data from a notification into an application. In order for this to work the app markup must use HTML data properties
+on elements that they want to inject the data on. The data property names define which data should be injected. The data
+is simply copied into the view, it remains stored in the library at all times.
 
-The data properties should be named as data-payload-* or data-metadata-* where the * represents the name of the property
-in the payload or metadata that should be injected.
+The data properties should be named as data-selected-* where the * represents the name of the property in the
+notification that should be injected. Injection works for nested properties as well (eg. data-selected-payload-foo).
  
 Notification injection occurs in the following cases:  
 
@@ -92,41 +93,44 @@ Notification injection occurs in the following cases:
 **Example** 
 ```html
 <!-- HTML Snippet (Before Injection) -->
-<span data-metadata-desc></span>
-<input data-payload-editableText />
-<select data-payload-simpleList></span>
-<select data-payload-complexList></span>
+<span data-selected-details></span>
+<input data-selected-payload-editableText />
+<select data-selected-payload-simpleList></span>
+<select data-selected-payload-complexList></span>
 ```
 ```js
 //Sample Notification
 {
-   "metadata":{
-      "desc":"Testing 1, 2, 3",
-      "time":"2016-05-31T17:07:24.390Z",
-      "group":"/demos/realms/notify/jennifer.rene",
-      "username":"admin.user"
-   },
+   "subject":"Notification Test",
+   "details":"Testing 1, 2, 3",
+   "url":"http://dev.bridgeit.io/test/",
+   "icon":"http://dev.bridgeit.io/test/icon",
+   "priority":"info",
+   "expire_time":4320,
    "payload":{
       "editableText":"Some editable text",
-      "simpleList":["1","2","3"],
+      "simpleList":[ "1", "2", "3" ],
       "complexList":[
          { "label":"List Item One", "value":"1" },
          { "label":"List Item Two", "value":"2" },
-         { "label":"List Item Three", "value":"3" },
+         { "label":"List Item Three", "value":"3" }
       ]
-   }
+   },
+   "time":"2016-06-07T23:37:08.694Z",
+   "group":"jennifer.rene",
+   "sender":"admin.user"
 }
 ```
 ```html
 <!-- HTML Snippet (After Injection) -->
-<span data-metadata-desc>Testing 1, 2, 3</span>
-<input data-payload-editableText value="Some editable text"/>
-<select data-payload-simpleList>
+<span data-selected-details>Testing 1, 2, 3</span>
+<input data-selected-payload-editableText value="Some editable text"/>
+<select data-selected-payload-simpleList>
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
 </select>
-<select data-payload-complexList>
+<select data-selected-payload-complexList>
     <option value="1">List Item One</option>
     <option value="2">List Item Two</option>
     <option value="3">List Item Three</option>
@@ -138,13 +142,10 @@ Notification injection occurs in the following cases:
 
 * [Properties](#properties)
     * [Readonly](#readonly)
-        * [payload](#payload)
-        * [metadata](#metadata)
+        * [selected](#selected)
         * [queue](#queue)
         * [queuePosition](#queuePosition)
     * [General Notification Config](#generalConfig)
-        * [title](#title)
-        * [icon](#icon)
         * [hideAfterClick](#hideAfterClick)
     * [Toast Notification Config](#toastConfig)
         * [enabled](#toastEnabled)
@@ -167,7 +168,6 @@ Notification injection occurs in the following cases:
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
         * [hideNotification](#hideNotification)
-        * [getSelectedNotification](#getSelectedNotification)
         * [removeSelectedNotification](#removeSelectedNotification)
         * [injectNotificationData](#injectNotificationData)
         * [clearInjectedNotificationData](#clearInjectedNotificationData)
@@ -204,15 +204,13 @@ Notification injection occurs in the following cases:
 
 | Property                                         | Description                                                                  | Type     | Default |
 | ------------------------------------------------ | ---------------------------------------------------------------------------- | -------- | ------- |
-| <a name="payload"></a> payload                   | The selected notification payload.                                           | Object   | null    |
-| <a name="metadata"></a> metadata                 | The selected notification metadata.                                          | Object   | null    |
+| <a name="selected"></a> selected                 | The selected notification.                                                   | Object   | null    |
 | <a name="queue"></a> queue                       | The notification queue. New notifications are added to the end of the queue. | Object[] | []      |
 | <a name="queuePosition"></a> queuePosition       | The zero-based index of the selected notification in the queue.              | Integer  | -1      |
 
 **Example**  
 ```js
-var selectedPayload = voyent.notify.payload;
-var selectedMetadata = voyent.notify.metadata;
+var selectedNotification = voyent.notify.selected;
 var queue = voyent.notify.queue;
 ```
 
@@ -221,14 +219,10 @@ var queue = voyent.notify.queue;
 
 | Property                                     | Description                                                                                                                                                                                     | Type    | Default |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------- |
-| <a name="title"></a> title                   | Title/header text for each notification.                                                                                                                                                        | String  | ''      |
-| <a name="icon"></a> icon                     | The URL of the image to use as an icon for toast and browser native notifications. The recommended image size is 40px x 40px. The image will be scaled down to a width of 40px if it is larger. | String  | ''      |
 | <a name="hideAfterClick"></a> hideAfterClick | Indicates if the notification should be hidden after clicking on it.                                                                                                                            | Boolean | true    |
 
 **Example**  
 ```js
-voyent.notify.config.title = 'New Voyent Notification';
-voyent.notify.config.icon = 'http://url-to-icon/img.png';
 voyent.notify.config.hideAfterClick = 'false';
 ```
 
@@ -301,8 +295,7 @@ voyent.notify.stopListening();
 
 <a name="redirectToNotification"></a>
 ##### redirectToNotification(notification)
-Redirects the browser to the URL specified in the metadata of the passed notification and injects the notification data
-into the page.
+Redirects the browser to the URL specified in the passed notification and injects the notification data into the page.
 
 | Param        | Description                                         | Type   |
 | ------------ | --------------------------------------------------- | ------ |
@@ -335,16 +328,6 @@ document.addEventListener('afterDisplayNotification',function(e) {
 });
 ```
 
-<a name="getSelectedNotification"></a>
-##### getSelectedNotification()
-Returns the selected notification or null if no notification is selected.  
-**Returns:** Object - The notification.
-
-**Example**  
-```js
-var selectedNotification = voyent.notify.getSelectedNotification();
-```
-
 <a name="removeSelectedNotification"></a>
 ##### removeSelectedNotification()
 Removes the selected notification. If successful the queuePosition will be reset to -1 indicating that no notification is currently selected.  
@@ -359,8 +342,8 @@ if (voyent.notify.removeSelectedNotification()) {
 
 <a name="injectNotificationData"></a>
 ##### injectNotificationData()
-Injects the selected notification into elements with data-payload-* and data-metadata-* attributes. Currently has 
-special support for input and select elements. For all other elements the data will be inserted as text content.
+Injects the selected notification into elements with data-selected-* attributes. Currently has special support for input
+and select elements. For all other elements the data will be inserted as text content.
 
 **Example**  
 ```js
@@ -587,7 +570,7 @@ Fired before a notification is displayed. Fires for both toast and browser nativ
 ```js
 //prevent notifications from being displayed based on some criteria
 document.addEventListener('beforeDisplayNotification',function(e) {
-    if (e.detail.notification.metadata.desc.indexOf('debug') > -1) {
+    if (e.detail.notification.details.indexOf('debug') > -1) {
         e.preventDefault();
     }
 });
@@ -609,7 +592,7 @@ Fired after a notification is displayed. Fires for both toast and browser native
 //change the message text for specific notifications
 document.addEventListener('afterDisplayNotification',function(e) {
     var toast = e.detail.toast;
-    if (toast && e.detail.notification.payload.priority === 5) {
+    if (toast && e.detail.notification.priority === 'critical') {
         var messageDiv = toast.querySelector('.message');
         messageDiv.setAttribute('style',messageDiv.getAttribute('style')+'color:red;font-weight:bold;');
     }
