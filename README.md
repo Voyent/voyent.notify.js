@@ -146,6 +146,7 @@ Notification injection occurs in the following cases:
         * [queue](#queue)
         * [queuePosition](#queuePosition)
     * [General Notification Config](#generalConfig)
+        * [autoSelectNotification](#autoSelectNotification)
         * [hideAfterClick](#hideAfterClick)
     * [Toast Notification Config](#toastConfig)
         * [enabled](#toastEnabled)
@@ -190,7 +191,7 @@ Notification injection occurs in the following cases:
     * [afterQueueUpdated](#afterQueueUpdated)
     * [beforeDisplayNotification](#beforeDisplayNotification)
     * [afterDisplayNotification](#afterDisplayNotification)
-    * [notificationSelected](#notificationSelected)
+    * [notificationChanged](#notificationChanged)
     * [notificationClicked](#notificationClicked)
     * [notificationClosed](#notificationClosed)
 
@@ -215,14 +216,16 @@ var queue = voyent.notify.queue;
 ```
 
 <a name="generalConfig"></a>
-#### General Notification Config (config.)
+#### General Config (config.)
 
-| Property                                     | Description                                                                                                                                                                                     | Type    | Default |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------- |
-| <a name="hideAfterClick"></a> hideAfterClick | Indicates if the notification should be hidden after clicking on it.                                                                                                                            | Boolean | true    |
+| Property                                                     | Description                                                                                                                                                                                     | Type    | Default    |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------- |
+| <a name="autoSelectNotification"></a> autoSelectNotification | Provides options for auto selecting notifications so that each time a selected notification is removed a new one is selected.  One of 'disabled','oldest','newest'.                             | String  | 'disabled' |
+| <a name="hideAfterClick"></a> hideAfterClick                 | Indicates if notifications should be hidden after clicking on them.                                                                                                                             | Boolean | true       |
 
 **Example**  
 ```js
+voyent.notify.config.autoSelectNotification = 'oldest';
 voyent.notify.config.hideAfterClick = 'false';
 ```
 
@@ -599,9 +602,11 @@ document.addEventListener('afterDisplayNotification',function(e) {
 });
 ```
 
-<a name="notificationSelected"></a>
-##### notificationSelected
-Fired after a notification is selected.
+<a name="notificationChanged"></a>
+##### notificationChanged
+Fired after the selected property is changed. The notification returned may be null. If this event fires in relation to a
+queue update then this event will always be fired AFTER the queue has been updated.
+
 **Cancelable:** false
 
 | Param        | Description                         | Type   |
@@ -611,7 +616,7 @@ Fired after a notification is selected.
 **Example**  
 ```js
 //custom app handling each time a notification is selected
-document.addEventListener('notificationSelected',function(e) {
+document.addEventListener('notificationChanged',function(e) {
     myApp.doSpecialHandling();
 });
 ```
