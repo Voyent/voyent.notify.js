@@ -145,7 +145,7 @@ Notification injection occurs in the following cases:
         * [selected](#selected)
         * [queue](#queue)
         * [queuePosition](#queuePosition)
-    * [General Notification Config](#generalConfig)
+    * [General Config](#generalConfig)
         * [autoSelectNotification](#autoSelectNotification)
         * [hideAfterClick](#hideAfterClick)
     * [Toast Notification Config](#toastConfig)
