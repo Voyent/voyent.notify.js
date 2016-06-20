@@ -187,6 +187,7 @@ Notification injection occurs in the following cases:
     
 * [Events](#events)
     * [voyentNotifyInitialized](#voyentNotifyInitialized)
+    * [notificationReceived](#notificationReceived)
     * [beforeQueueUpdated](#beforeQueueUpdated)
     * [afterQueueUpdated](#afterQueueUpdated)
     * [beforeDisplayNotification](#beforeDisplayNotification)
@@ -513,6 +514,22 @@ Fired after the library is initialized and listening for new notifications. Only
 //set the desired default config
 document.addEventListener('voyentNotifyInitialized',function(e) {
     e.detail.config.toast.enabled = false;
+});
+```
+
+<a name="notificationReceived"></a>
+##### notificationReceived
+Fired after a new notification is received in the browser. Not cancelable.  
+**Cancelable:** false
+
+| Param        | Description                              | Type   |
+| ------------ | ---------------------------------------- | ------ |
+| notification | The notification that was just received. | Object |
+
+**Example**  
+```js
+document.addEventListener('notificationReceived',function(e) {
+    console.log('Notification received:',JSON.stringify(e.detail.notification));
 });
 ```
 
