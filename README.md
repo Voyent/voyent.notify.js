@@ -639,8 +639,8 @@ document.addEventListener('notificationChanged',function(e) {
 ```
 
 <a name="notificationClicked"></a>
-##### notificationClicked
-Fired when a notification is clicked. Fires for both toast and browser native notifications. Cancel the event to prevent the app from redirecting and the notification from closing (if hideAfterClick is true).    
+##### notificationClicked  
+Fired when a notification is clicked. Fires for both toast and browser native notifications. Cancel the event to prevent the app from redirecting to the URL specified in the notification.  
 **Cancelable:** true
 
 | Param        | Description                                                                                            | Type   |
@@ -655,7 +655,6 @@ Fired when a notification is clicked. Fires for both toast and browser native no
 document.addEventListener('notificationClicked',function(e) {
     if (myApp.currentUser.isAdmin) {
         e.preventDefault();
-        voyent.notify.hideNotification(e.detail.toast ? e.detail.toast : e.detail.native,0);
     }
 });
 ```
