@@ -9,7 +9,7 @@
 		".gitignore"
 	],
 	"dependencies":{
-      "bridgeit.js": "1.0.7",
+      "bridgeit.js": "#gh-pages",
       "bridgeit.io.js": "#dev",
       "bridgeit.xio.js": "https://github.com/bridgeit/bridgeit.xio.js.git#gh-pages"
 	},
