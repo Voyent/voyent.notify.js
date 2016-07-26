@@ -29,9 +29,9 @@ Tested on Chrome, Firefox and Safari.
 
 ## Dependencies
  
-[bridgeit.js](https://github.com/bridgeit/bridgeit.js)  
-[bridgeit.io.js](https://github.com/bridgeit/bridgeit.io.js)  
-[bridgeit.xio.js](https://github.com/bridgeit/bridgeit.xio.js)  
+[voyent.js](https://github.com/voyent/voyent.js)  
+[voyent.io.js](https://github.com/voyent/voyent.io.js)  
+[voyent.xio.js](https://github.com/voyent/voyent.xio.js)  
 
 ## Getting Started
 
@@ -46,9 +46,9 @@ Tested on Chrome, Firefox and Safari.
 2) Import the dependencies:
 
 ```
-<script src="../bower_components/voyent.notify.js/bower_components/bridgeit.js/lib/bridgeit.js"></script>
-<script src="../bower_components/voyent.notify.js/bower_components/bridgeit.io.js/lib/bridgeit.io.js"></script>
-<script src="../bower_components/voyent.notify.js/bower_components/bridgeit.xio.js/lib/bridgeit.xio.js"></script>
+<script src="../bower_components/voyent.notify.js/bower_components/voyent.js/lib/voyent.js"></script>
+<script src="../bower_components/voyent.notify.js/bower_components/voyent.io.js/lib/voyent.io.js"></script>
+<script src="../bower_components/voyent.notify.js/bower_components/voyent.xio.js/lib/voyent.xio.js"></script>
 ```
 
 3) Import the library and dependencies: 
@@ -60,13 +60,13 @@ Tested on Chrome, Firefox and Safari.
 4) Establish a connection to the push service: 
 
 ```
-bridgeit.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
+voyent.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername());
 ```
 
 5) Join desired push groups:
 
 ```
-bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() + "/" + bridgeit.io.auth.getLastKnownUsername());
+voyent.xio.push.join("/demos/realms/" + voyent.io.auth.getLastKnownRealm() + "/" + voyent.io.auth.getLastKnownUsername());
 ```
 
 <a name="notificationInjection"></a>
@@ -103,8 +103,8 @@ Notification injection occurs in the following cases:
 {
    "subject":"Notification Test",
    "details":"Testing 1, 2, 3",
-   "url":"http://dev.bridgeit.io/test/",
-   "icon":"http://dev.bridgeit.io/test/icon",
+   "url":"http://dev.voyent.cloud/test/",
+   "icon":"http://dev.voyent.cloud/test/icon",
    "priority":"info",
    "expire_time":4320,
    "payload":{
@@ -277,7 +277,7 @@ voyent.notify.config.native.hideAfterMs = 5000;
 <a name="startListening"></a>
 ##### startListening()
 Start listening for notifications. This function is called automatically when the library is loaded and a user is logged
-in via bridgeit.io. This function only needs to be called manually after [stopListening](#stopListening) has been called.
+in via voyent.io. This function only needs to be called manually after [stopListening](#stopListening) has been called.
 
 **Example**  
 ```js
