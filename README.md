@@ -502,7 +502,8 @@ voyent.notify.clearNotificationQueue();
 
 <a name="voyentNotifyInitialized"></a>
 ##### voyentNotifyInitialized
-Fired after the library is initialized and listening for new notifications. Only fires on initial load.  
+Fired after the library is initialized and listening for new notifications. This is the recommended place to change default 
+configuration options. Only fires on initial load.  
 **Cancelable:** false
 
 | Param  | Description                  | Type    |
@@ -514,6 +515,7 @@ Fired after the library is initialized and listening for new notifications. Only
 //set the desired default config
 document.addEventListener('voyentNotifyInitialized',function(e) {
     e.detail.config.toast.enabled = false;
+    e.detail.config.native.enabled = false;
 });
 ```
 
