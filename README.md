@@ -168,6 +168,7 @@ Notification injection occurs in the following cases:
         * [stopListening](#stopListening)
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
+        * [displayNotification](#displayNotification)
         * [hideNotification](#hideNotification)
         * [removeSelectedNotification](#removeSelectedNotification)
         * [injectNotificationData](#injectNotificationData)
@@ -309,6 +310,22 @@ Redirects the browser to the URL specified in the passed notification and inject
 ```js
 var redirectTo = voyent.notify.getNextNotification();
 voyent.notify.redirectToNotification(redirectTo);
+```
+
+<a name="displayNotification"></a>
+##### displayNotification(notification)
+Displays the passed notification as a toast or browser native notification, depending on the current configuration. Can
+be used to re-display a notification from the queue or even to display a custom notification that is not part of the
+queue.
+
+| Param        | Description                                                        | Type    |
+| ------------ | ------------------------------------------------------------------ | ------- |
+| notification | The notification object to be displayed.                           | Object  |
+
+**Example**  
+```js
+//redisplay the last notification in the queue
+voyent.notify.displayNotification(voyent.notify.getNewestNotification());
 ```
 
 <a name="hideNotification"></a>
@@ -503,7 +520,7 @@ voyent.notify.clearNotificationQueue();
 <a name="voyentNotifyInitialized"></a>
 ##### voyentNotifyInitialized
 Fired after the library is initialized and listening for new notifications. This is the recommended place to change default 
-configuration options. Only fires on initial load.  
+configuration options if the listener is guaranteed to exist before the library loads. Only fires on initial load.  
 **Cancelable:** false
 
 | Param  | Description                  | Type    |
