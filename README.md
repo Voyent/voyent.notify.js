@@ -324,7 +324,7 @@ queue.
 
 **Example**  
 ```js
-//redisplay the last notification in the queue
+//re-display the last notification in the queue
 voyent.notify.displayNotification(voyent.notify.getNewestNotification());
 ```
 
