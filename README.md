@@ -29,7 +29,6 @@ Tested on Chrome, Firefox and Safari.
 
 ## Dependencies
  
-[voyent.js](https://github.com/voyent/voyent.js)  
 [voyent.io.js](https://github.com/voyent/voyent.io.js)  
 [voyent.xio.js](https://github.com/voyent/voyent.xio.js)  
 
@@ -46,7 +45,6 @@ Tested on Chrome, Firefox and Safari.
 2) Import the dependencies:
 
 ```
-<script src="../bower_components/voyent.notify.js/bower_components/voyent.js/lib/voyent.js"></script>
 <script src="../bower_components/voyent.notify.js/bower_components/voyent.io.js/lib/voyent.io.js"></script>
 <script src="../bower_components/voyent.notify.js/bower_components/voyent.xio.js/lib/voyent.xio.js"></script>
 ```
