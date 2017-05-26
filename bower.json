@@ -9,8 +9,7 @@
 		".gitignore"
 	],
 	"dependencies":{
-      "voyent.io.js": "https://github.com/voyent/voyent.io.js.git#dev",
-      "voyent.xio.js": "https://github.com/voyent/voyent.xio.js.git#gh-pages"
+      "voyent.js": "https://github.com/voyent/voyent.js.git#VRAS"
 	},
 	"devDependencies":{},
 	"keywords":[

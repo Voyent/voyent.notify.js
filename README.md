@@ -29,42 +29,28 @@ Tested on Chrome, Firefox and Safari.
 
 ## Dependencies
  
-[voyent.io.js](https://github.com/voyent/voyent.io.js)  
-[voyent.xio.js](https://github.com/voyent/voyent.xio.js)  
+[voyent.js](https://github.com/voyent/voyent.js/tree/VRAS)  
 
 ## Getting Started
 
-1) Get the basic dependencies manually or with Bower: 
+1) Load the library manually or with Bower: 
 
 ```
 "dependencies": {
-	"voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#master"
+	"voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#VRAS"
 }
 ```
 
-2) Import the dependencies:
+2) Import the dependency:
 
 ```
-<script src="../bower_components/voyent.notify.js/bower_components/voyent.io.js/lib/voyent.io.js"></script>
-<script src="../bower_components/voyent.notify.js/bower_components/voyent.xio.js/lib/voyent.xio.js"></script>
+<script src="../bower_components/voyent.notify.js/bower_components/voyent.js/build/dist/voyent.js"></script>
 ```
 
-3) Import the library and dependencies: 
+3) Import the library: 
 
 ```
 <script src="../bower_components/voyent.notify.js/lib/voyent.notify.js"></script>
-```
-
-4) Establish a connection to the push service: 
-
-```
-voyent.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername());
-```
-
-5) Join desired push groups:
-
-```
-voyent.xio.push.join("/demos/realms/" + voyent.io.auth.getLastKnownRealm() + "/" + voyent.io.auth.getLastKnownUsername());
 ```
 
 <a name="notificationInjection"></a>
