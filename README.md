@@ -1,8 +1,8 @@
 # voyent.notify.js
 
 Voyent.notify.js is a client library for displaying and interacting with notifications received from the Voyent Push
-Service. The library provides tools for displaying notifications, managing the notification queue and injecting
-notification data into web pages. Some notable features of the library include:
+Service. The library provides functions for managing push groups, displaying notifications, managing the notification
+queue and injecting notification data into web pages. Some notable features of the library include:
 
 * **Browser Native Notifications**: When the library is included in your application you will automatically be prompted 
 to allow browser native notifications. Browser native notifications are based on the Web Notifications API. If permission
@@ -50,7 +50,7 @@ Tested on Chrome, Firefox and Safari.
 3) Import the library: 
 
 ```
-<script src="../bower_components/voyent.notify.js/lib/voyent.notify.js"></script>
+<link rel="import" href="bower_components/voyent.notify.js/voyent.notify.html">
 ```
 
 <a name="notificationInjection"></a>
@@ -126,6 +126,7 @@ Notification injection occurs in the following cases:
 
 * [Properties](#properties)
     * [Readonly](#readonly)
+        * [groups](#groups)
         * [selected](#selected)
         * [queue](#queue)
         * [queuePosition](#queuePosition)
@@ -150,6 +151,8 @@ Notification injection occurs in the following cases:
     * [General](#generalFunctions)
         * [startListening](#startListening)
         * [stopListening](#stopListening)
+        * [addPushListener](#addPushListener)
+        * [removePushListener](#removePushListener)
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
         * [displayNotification](#displayNotification)
@@ -189,11 +192,12 @@ Notification injection occurs in the following cases:
 <a name="readonly"></a>
 #### Readonly
 
-| Property                                         | Description                                                                  | Type     | Default |
-| ------------------------------------------------ | ---------------------------------------------------------------------------- | -------- | ------- |
-| <a name="selected"></a> selected                 | The selected notification.                                                   | Object   | null    |
-| <a name="queue"></a> queue                       | The notification queue. New notifications are added to the end of the queue. | Object[] | []      |
-| <a name="queuePosition"></a> queuePosition       | The zero-based index of the selected notification in the queue.              | Integer  | -1      |
+| Property                                         | Description                                                                  | Type     | Default            |
+| ------------------------------------------------ | ---------------------------------------------------------------------------- | -------- | ------------------ |
+| <a name="groups"></a> groups                     | The groups currently registered for notifications.                           | String[] | ["currentUsername"]|
+| <a name="selected"></a> selected                 | The selected notification.                                                   | Object   | null               |
+| <a name="queue"></a> queue                       | The notification queue. New notifications are added to the end of the queue. | Object[] | []                 |
+| <a name="queuePosition"></a> queuePosition       | The zero-based index of the selected notification in the queue.              | Integer  | -1                 |
 
 **Example**  
 ```js
@@ -271,12 +275,30 @@ voyent.notify.startListening();
 
 <a name="stopListening"></a>
 ##### stopListening()
-Stop listening for notifications. No new notifications will be received by the library after calling this function but
-the other features of the library will still be available.
+Stop listening for notifications for all groups currently joined. No new notifications will be received by the library
+after calling this function but the other features of the library will still be available.
 
 **Example**  
 ```js
 voyent.notify.stopListening();
+```
+
+<a name="addPushListener"></a>
+##### addPushListener(group)
+Registers a new push listener for the specified group.
+
+**Example**  
+```js
+voyent.notify.addPushListener('dev-team');
+```
+
+<a name="removePushListener"></a>
+##### removePushListener(group)
+Removes the registered push listener for the specified group.
+
+**Example**  
+```js
+voyent.notify.removePushListener('dev-team');
 ```
 
 <a name="notificationManagement"></a>
