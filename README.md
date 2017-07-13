@@ -151,8 +151,8 @@ Notification injection occurs in the following cases:
     * [General](#generalFunctions)
         * [startListening](#startListening)
         * [stopListening](#stopListening)
-        * [addPushListener](#addPushListener)
-        * [removePushListener](#removePushListener)
+        * [addGroup](#addGroup)
+        * [leaveGroup](#leaveGroup)
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
         * [displayNotification](#displayNotification)
@@ -283,22 +283,22 @@ after calling this function but the other features of the library will still be 
 voyent.notify.stopListening();
 ```
 
-<a name="addPushListener"></a>
-##### addPushListener(group)
+<a name="addGroup"></a>
+##### addGroup(group)
 Registers a new push listener for the specified group.
 
 **Example**  
 ```js
-voyent.notify.addPushListener('dev-team');
+voyent.notify.addGroup('dev-team');
 ```
 
-<a name="removePushListener"></a>
-##### removePushListener(group)
+<a name="leaveGroup"></a>
+##### leaveGroup(group)
 Removes the registered push listener for the specified group.
 
 **Example**  
 ```js
-voyent.notify.removePushListener('dev-team');
+voyent.notify.leaveGroup('dev-team');
 ```
 
 <a name="notificationManagement"></a>
