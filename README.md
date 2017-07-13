@@ -151,7 +151,7 @@ Notification injection occurs in the following cases:
     * [General](#generalFunctions)
         * [startListening](#startListening)
         * [stopListening](#stopListening)
-        * [addGroup](#addGroup)
+        * [joinGroup](#joinGroup)
         * [leaveGroup](#leaveGroup)
     * [Notification Management](#notificationManagement)
         * [redirectToNotification](#redirectToNotification)
@@ -283,13 +283,13 @@ after calling this function but the other features of the library will still be 
 voyent.notify.stopListening();
 ```
 
-<a name="addGroup"></a>
-##### addGroup(group)
+<a name="joinGroup"></a>
+##### joinGroup(group)
 Registers a new push listener for the specified group.
 
 **Example**  
 ```js
-voyent.notify.addGroup('dev-team');
+voyent.notify.joinGroup('dev-team');
 ```
 
 <a name="leaveGroup"></a>
