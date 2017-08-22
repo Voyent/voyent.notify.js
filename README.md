@@ -525,8 +525,8 @@ voyent.notify.clearNotificationQueue();
 
 <a name="voyentNotifyInitialized"></a>
 ##### voyentNotifyInitialized
-Fired after the library is initialized and listening for new notifications. This is the recommended place to change default 
-configuration options if the listener is guaranteed to exist before the library loads. Only fires on initial load.  
+Fired after the library is initialized and listening for new notifications. This is the recommended place to
+change default configuration options. Only fires once on initial load.  
 **Cancelable:** false
 
 | Param  | Description                  | Type    |
