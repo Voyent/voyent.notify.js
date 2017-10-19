@@ -53,6 +53,8 @@ Tested on Chrome, Firefox and Safari.
 <link rel="import" href="bower_components/voyent.notify.js/voyent.notify.html">
 ```
 
+4) Call the [initialize](#initialize) function after setting up listeners
+
 <a name="notificationInjection"></a>
 ## Notification Injection
 
