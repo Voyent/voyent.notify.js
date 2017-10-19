@@ -149,6 +149,7 @@ Notification injection occurs in the following cases:
 
 * [Functions](#functions)
     * [General](#generalFunctions)
+        * [initialize](#initialize)
         * [startListening](#startListening)
         * [stopListening](#stopListening)
         * [joinGroup](#joinGroup)
@@ -263,7 +264,7 @@ voyent.notify.config.native.hideAfterMs = 5000;
 <a name="generalFunctions"></a>
 #### General 
 
-<a name="startListening"></a>
+<a name="initialize"></a>
 ##### initialize()
 Initialize the library. This function MUST be called to enable the library. The initialization process may fire various events
 so we always suggest calling this after you setup any listeners of interest. Can be triggered before or after logging in.
