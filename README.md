@@ -264,9 +264,19 @@ voyent.notify.config.native.hideAfterMs = 5000;
 #### General 
 
 <a name="startListening"></a>
+##### initialize()
+Initialize the library. This function MUST be called to enable the library. The initialization process may fire various events
+so we always suggest calling this after you setup any listeners of interest. Can be triggered before or after logging in.
+
+**Example**  
+```js
+voyent.notify.initialize();
+```
+
+<a name="startListening"></a>
 ##### startListening()
-Start listening for notifications. This function is called automatically when the library is loaded and a user is logged
-in via voyent.io. This function only needs to be called manually after [stopListening](#stopListening) has been called.
+Start listening for notifications. This function is called automatically when the library is initialized and a user is logged
+in via voyent.js. This function only needs to be called manually after [stopListening](#stopListening) has been called.
 
 **Example**  
 ```js
