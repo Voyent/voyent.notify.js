@@ -166,6 +166,7 @@ Notification injection occurs in the following cases:
         * [selectNotification](#selectNotification)
         * [selectNotificationAt](#selectNotificationAt)
     * [Queue Management](#queueManagement)
+        * [refreshNotificationQueue](#refreshNotificationQueue)
         * [getNotificationCount](#getNotificationCount)
         * [getNotificationAt](#getNotificationAt)
         * [getNextNotification](#getNextNotification)
@@ -429,6 +430,20 @@ voyent.notify.selectNotificationAt(3);
 
 <a name="queueManagement"></a>
 #### Queue Management
+
+<a name="refreshNotificationQueue"></a>
+##### refreshNotificationQueue(nid)
+Fetches all the notifications in the current user's mailbox and adds them to the queue. If an 
+`nid` is provided then the notification matching that nid will be automatically selected.  
+
+| Param | Description                                             | Type    |
+| ----- | ------------------------------------------------------- | ------- |
+|  nid  | The notification id of the notification to be selected. | String |
+
+**Example**  
+```js
+voyent.notify.refreshNotificationQueue();
+```
 
 <a name="getNotificationCount"></a>
 ##### getNotificationCount()
