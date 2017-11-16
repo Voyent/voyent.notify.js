@@ -21,8 +21,6 @@ application. For more information on this see [Notification Injection](#notifica
 * **Queue Management**: Notifications are automatically added to the queue when they are received. Each one can be loaded
 from the queue and removed when they are no longer needed.
 
-* **Persistent Queue**: The notification queue is stored in the session and will survive app refreshes or redirects.
-
 
 ## Compatible Platforms
 Tested on Chrome, Firefox and Safari.
@@ -588,15 +586,14 @@ document.addEventListener('notificationReceived',function(e) {
 
 <a name="beforeQueueUpdated"></a>
 ##### beforeQueueUpdated
-Fired before the queue is updated. An update will be triggered when loading a queue from storage or adding, removing or clearing the queue. Cancel the event to prevent the operation.  
+Fired before the queue is updated. An update will be triggered when adding, removing or clearing the queue. Cancel the event to prevent the operation.  
 **Cancelable:** true
 
-| Param        | Description                                                                                                                          | Type     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| op           | The operation being performed on the queue. One of 'add','del','clear',load'. Load indicates the queue is being loaded from storage. | String   |
-| notification | The notification being added or removed (only provided if op = 'add' or 'del').                                                      | Object   |
-| queueToLoad  | The queue that is being loaded from storage (only provided if op = 'load').                                                          | Object[] |
-| queue        | The queue before the operation is performed.                                                                                         | Object[] |
+| Param        | Description                                                                     | Type     |
+| ------------ | ------------------------------------------------------------------------------- | -------- |
+| op           | The operation being performed on the queue. One of 'add','del','clear'.         | String   |
+| notification | The notification being added or removed (only provided if op = 'add' or 'del'). | Object   |
+| queue        | The queue before the operation is performed.                                    | Object[] |
 
 **Example**  
 ```js
@@ -612,14 +609,14 @@ document.addEventListener('beforeQueueUpdated',function(e) {
 
 <a name="afterQueueUpdated"></a>
 ##### afterQueueUpdated
-Fired after the queue is updated.  
+Fired after the queue is updated. An update will be triggered when adding, removing or clearing the queue. Cancel the event to prevent the operation.  
 **Cancelable:** false
 
-| Param        | Description                                                                                                                             | Type     |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| op           | The operation that was just performed on the queue. One of 'add','del','clear',load'. Load indicates the queue was loaded from storage. | String   |
-| notification | The notification that was added or removed (only provided if op = 'add' or 'del').                                                      | Object   |
-| queue        | The queue after the operation was performed.                                                                                            | Object[] |
+| Param        | Description                                                                        | Type     |
+| ------------ | ---------------------------------------------------------------------------------- | -------- |
+| op           | The operation that was just performed on the queue. One of 'add','del','clear'.    | String   |
+| notification | The notification that was added or removed (only provided if op = 'add' or 'del'). | Object   |
+| queue        | The queue after the operation was performed.                                       | Object[] |
 
 **Example**  
 ```js
