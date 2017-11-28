@@ -431,8 +431,7 @@ voyent.notify.selectNotificationAt(3);
 
 <a name="refreshNotificationQueue"></a>
 ##### refreshNotificationQueue(nid)
-Fetches all the notifications in the current user's mailbox and adds them to the queue. If an 
-`nid` is provided then the notification matching that nid will be automatically selected.  
+Fetches all the notifications in the current user's mailbox. If notifications are found then the queue will be cleared on the client and repopulated with the found notifications. If an `nid` is provided then the notification matching that nid will be automatically selected.  
 
 | Param | Description                                             | Type    |
 | ----- | ------------------------------------------------------- | ------- |
@@ -537,12 +536,16 @@ voyent.notify.removeNotificationAt(1);
 
 <a name="clearNotificationQueue"></a>
 ##### clearNotificationQueue()
-Removes all notifications from the notification queue (including clearing the selected notification) and resets the 
+Removes all notifications from the notification queue (including clearing the selected notification) and resets the queuePosition to -1. 
 queuePosition to -1.  
+
+| Param             | Description                                                                            | Type    |
+| ----------------- | -------------------------------------------------------------------------------------- | ------- |
+| deleteFromMailbox | Specifies whether the notifications should be removed from the user's mailbox as well. | Boolean |
 
 **Example**  
 ```js
-voyent.notify.clearNotificationQueue();
+voyent.notify.clearNotificationQueue(false);
 ```
 
 
