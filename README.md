@@ -536,7 +536,7 @@ voyent.notify.removeNotificationAt(1);
 
 <a name="clearNotificationQueue"></a>
 ##### clearNotificationQueue()
-Removes all notifications from the notification queue (including clearing the selected notification) and resets the queuePosition to -1. 
+Removes all notifications from the notification queue and resets the queuePosition to -1.  
 queuePosition to -1.  
 
 | Param             | Description                                                                            | Type    |
