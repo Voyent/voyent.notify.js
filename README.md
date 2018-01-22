@@ -133,6 +133,7 @@ Notification injection occurs in the following cases:
     * [General Config](#generalConfig)
         * [autoSelectNotification](#autoSelectNotification)
         * [hideAfterClick](#hideAfterClick)
+        * [useSubjectAsMessage](#useSubjectAsMessage)
     * [Toast Notification Config](#toastConfig)
         * [enabled](#toastEnabled)
         * [hideAfterMs](#toastHideAfterMs)
@@ -214,11 +215,13 @@ var queue = voyent.notify.queue;
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------- |
 | <a name="autoSelectNotification"></a> autoSelectNotification | Provides options for auto selecting notifications so that each time a selected notification is removed a new one is selected.  One of 'disabled','oldest','newest'.                             | String  | 'disabled' |
 | <a name="hideAfterClick"></a> hideAfterClick                 | Indicates if notifications should be hidden after clicking on them.                                                                                                                             | Boolean | true       |
+| <a name="useSubjectAsMessage"></a> useSubjectAsMessage       | Indicates whether the subject should be used as the message. When this is enabled the detail will be replaced with the subject and the detail will not be displayed.                            | Boolean | true       |
 
 **Example**  
 ```js
 voyent.notify.config.autoSelectNotification = 'oldest';
-voyent.notify.config.hideAfterClick = 'false';
+voyent.notify.config.hideAfterClick = false;
+voyent.notify.config.useSubjectAsMessage = false;
 ```
 
 <a name="toastConfig"></a>
