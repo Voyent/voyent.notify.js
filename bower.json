@@ -1,6 +1,6 @@
 {
 	"name": "voyent.notify.js",
-	"version": "0.0.1",
+	"version": "latest",
 	"main": "lib/voyent.notify.js",
 	"ignore": [
 		"bower.json",
@@ -17,5 +17,4 @@
 		"javascript",
 		"services"
 	]
-
 }
