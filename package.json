@@ -1,0 +1,12 @@
+{
+  "name": "voyent.notify.js",
+  "version": "1.0.0",
+  "description": "Voyent.notify.js: Client API for Voyent Notifications",
+  "main": "lib/voyent.notify.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Voyent/voyent.notify.js/tree/VRAS"
+  },
+  "author": "ICEsoft Technologies, Inc. <voyent@icesoft.com> (https://icesoft.com/)",
+  "license": "Apache-2.0"
+}
