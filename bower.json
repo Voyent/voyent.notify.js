@@ -1,6 +1,6 @@
 {
 	"name": "voyent.notify.js",
-	"version": "latest",
+	"version": "1.3.0",
 	"main": "lib/voyent.notify.js",
 	"ignore": [
 		"bower.json",
@@ -9,7 +9,7 @@
 		".gitignore"
 	],
 	"dependencies":{
-      "voyent.js": "https://github.com/voyent/voyent.js.git#VRAS"
+      "voyent.js": "https://github.com/voyent/voyent.js.git#1.3.0"
 	},
 	"devDependencies":{},
 	"keywords":[
