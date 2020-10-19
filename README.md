@@ -27,7 +27,7 @@ Tested on Chrome, Firefox and Safari.
 
 ## Dependencies
  
-[voyent.js](https://github.com/voyent/voyent.js/tree/VRAS)  
+[voyent.js](https://github.com/voyent/voyent.js/tree/vras-1.6.1)  
 
 ## Getting Started
 
@@ -35,7 +35,7 @@ Tested on Chrome, Firefox and Safari.
 
 ```
 "dependencies": {
-	"voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#VRAS"
+	"voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#vras-1.6.1"
 }
 ```
 
