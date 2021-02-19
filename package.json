@@ -1,6 +1,6 @@
 {
   "name": "voyent.notify.js",
-  "version": "1.0.0",
+  "version": "1.7.2",
   "description": "Voyent.notify.js: Client API for Voyent Notifications",
   "main": "lib/voyent.notify.js",
   "repository": {
