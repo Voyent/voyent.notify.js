@@ -1,11 +1,11 @@
 {
   "name": "voyent.notify.js",
-  "version": "1.0.0-latest",
+  "version": "1.8.0",
   "description": "Voyent.notify.js: Client API for Voyent Notifications",
   "main": "lib/voyent.notify.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Voyent/voyent.notify.js/tree/VRAS"
+    "url": "https://github.com/Voyent/voyent.notify.js/tree/vras-1.8.0"
   },
   "scripts": {
     "postinstall": "mkdir -p dist && terser lib/voyent.notify.js -o dist/voyent.notify.min.js"
